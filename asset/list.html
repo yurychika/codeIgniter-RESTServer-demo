@@ -1,0 +1,14 @@
+<p>There is <span>{{getCount()}}</span> people in the current list!<p>
+<p>There is <span>{{getName()}}</span> people in the current list!<p>
+
+
+<input type='text' ng-model='inputName'><button ng-click='addPerson()'>add</button>
+hello {{inputName}}
+
+<ul ng-repeat='person in list'>
+	<li ng-style='{color: "indianred"}'>{{person.name}}</li>
+	<li>{{person.age}}</li>
+	<li><a href='#/detail/{{person.name}}'>detail</a><li> 
+	<li ><button ng-click="count = count+1">mark</button></li> 
+</ul>
+count is {{count}}

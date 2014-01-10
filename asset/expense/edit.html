@@ -1,0 +1,63 @@
+<h2>Add Expenses</h2>
+<div class='container'>
+
+<form role="form" class='form-horizontal' style='width: 60%'>
+	<div class="form-group">
+		<label for="inputEmail3" class="col-sm-2 control-label">Title</label>
+		<div class="col-sm-10">
+		  <input type="text" class="form-control" id="title" name='title' placeholder="title" ng-focus='inputFocus()' ng-model='expense.title'>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">Amount</label>
+		<div class="col-sm-10">
+		  <input type="number" class="form-control" id="amount" name='amount' placeholder="Amount" ng-focus='inputFocus()' ng-model='expense.amount'>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">Desciption</label>
+		<div class="col-sm-10">
+		  <textarea class="form-control" id="desc" name='desc' placeholder="Description" ng-focus='inputFocus()' ng-model='expense.desc'></textarea>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">Date</label>
+		<div class="col-sm-10">
+		  <input type="date" class="form-control" id="date" name='date' placeholder="date" ng-focus='inputFocus()' ng-model='expense.date'>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">Time</label>
+		<div class="col-sm-10">
+		  <input type="time" class="form-control" id="time" name='time' placeholder="date" ng-focus='inputFocus()' ng-model='expense.time'>
+		</div>
+	</div>
+
+
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<ul>
+				<li ng-repeat="error in errors">
+					<p class='error'>{{error}}</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button ng-click='update()' class='btn btn-primary'>Update</button>
+		</div>
+	</div>
+</form>
+
+
+<div class="form-group">
+</div>
+
+
+
+</div>
