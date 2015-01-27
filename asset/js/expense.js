@@ -85,6 +85,23 @@ angular.module('project')
 
 		},
 
+		addComment: function(id, comment, callback){
+			var data = {id: id, comment: comment};
+
+			$http.post(siteUrl + '/REST/expense/addComment', data)
+			.success(function(data){
+				if(data.status === 'success'){
+					service.data.getById(id).comments.push(data.data);
+					callback(true);
+				}
+			})
+			.error(function(){
+				callback(false);
+			});
+
+		},
+
+
 		update: function(expense, callback){
 			var data = {
 				id: expense.id,
@@ -99,7 +116,7 @@ angular.module('project')
 			.success(function(data){
 				if(data.status === 'success'){
 					service.data.replaceById(id, data.data);
-					callback(true);
+					callback(data.data);
 				}
 			})
 			.error(function(){
@@ -115,7 +132,15 @@ angular.module('project')
 			.success(function(data){
 				if(data.status === 'success'){
 					service.data.delete(id);
+					callback(true);
+				}else{
+					if(data.status === 'Already deleted'){
+						service.data.delete(id);
+						callback(false);
+
+					}
 				}
+				
 			})
 			.error(function(){});
 		}
@@ -187,10 +212,19 @@ angular.module('project')
 	 	};
 
 	 	$scope.delete = function(id){
-	 		var _deleteCallback = function(data){
+	 		var _deleteCallback = function(success){
 	 			// if(data.status === 'success'){
 	 			// 	$location.path('/');
 	 			// }
+ 				$scope.expenses = Expense.data;
+	 			if(success){
+	 				console.log(Expense.data);
+	 				
+	 			}else{
+	 				$scope.errors.push('Item already has been deleted!');
+	 				alert('item already has been deleted!');
+	 			}
+
 	 		};
 	 		Expense.delete(id, _deleteCallback);
 	 	};
@@ -291,6 +325,19 @@ angular.module('project')
 	 		}
 	 	};
 
+	 	$scope.addComment = function(){
+	 		var c = $('#comment').val();
+	 		if(!c){
+	 			return;
+	 		}
+	 		var callback = function(data){
+	 			if(data){
+	 				$scope.expense.comments.push(data);
+	 			}
+	 		};
+	 		Expense.addComment(this.expense.id, c, callback);
+	 	};
+
 	 	$scope.delete = function(id){
 	 		var _deleteCallback = function(data){
 	 			// if(data.status === 'success'){
@@ -304,7 +351,7 @@ angular.module('project')
 	 		var callback = function(){
 	 			Expense.data = [];
 	 			Expense.initialized = false;
-	 			
+
 	 			$location.path('/');
 	 		};
 	 		User.logout(callback);

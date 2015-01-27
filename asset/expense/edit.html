@@ -1,4 +1,4 @@
-<h2>Add Expenses</h2>
+<h2>Edit Expenses</h2>
 <div class='container'>
 
 <form role="form" class='form-horizontal' style='width: 60%'>
@@ -34,6 +34,22 @@
 		  <input type="time" class="form-control" id="time" name='time' placeholder="date" ng-focus='inputFocus()' ng-model='expense.time'>
 		</div>
 	</div>
+
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">Comments</label>
+		<div class="col-sm-10">
+			<div class=''>
+				<input type="text" class="form-control" id="comment" name='comment' placeholder="comment" ng-focus='inputFocus()' style='display: inline-block; width: 75%'>
+				<button ng-click='addComment()' class='btn btn-success pull-right'>Add Comment</button>
+			</div>
+			<ul style='margin-top: 10px'>
+				<li ng-repeat='comment in expense.comments track by $index'>
+					<span>{{comment.comment}}</span>
+					<span class='pull-right'>{{comment.create_time}}</span>
+				</li>
+			</ul>
+		</div>
+	</div>	
 
 
 	<div class="form-group">

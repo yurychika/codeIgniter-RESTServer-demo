@@ -16,12 +16,8 @@
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
 require APPPATH.'/libraries/REST_Controller.php';
 
-class User extends CI_Controller {
-
-	function index() {
-		var_dump($_POST);
-		echo $this->input->post('username');
-	}
+class User extends REST_Controller
+{
 
 	function test_get(){
 		$id = $this->session->userdata('id');
@@ -34,51 +30,15 @@ class User extends CI_Controller {
 		echo 123;
 	}
 
-	function login(){
-		// $rawpostdata = file_get_contents("php://input");
-		// $post = json_decode($rawpostdata, true);
-		// $username = $post['username'];
-		// $password = $post['password'];
-		$username = $_POST['username'];
-		$password = $_POST['password'];
-		$password = md5($password);
-
-		$query = $this->db->query("SELECT id, username, password FROM user WHERE username='{$username}' and password='{$password}' ");
-		if($query->num_rows > 0){
-			$result = $query->result();
-			$id = $result[0]->id;
-			$username = $result[0]->username;
-			
- 			$this->session->set_userdata('id', $id);
-			$this->session->set_userdata('username', $username);
-			$apikey = md5($id . $username);
-
-			header("HTTP/1.1 200 OK");
-			echo json_encode(array('status' => 'successs', 'apikey' => $apikey));
-			// $this->response(array('status' => 'successs'), 200);
-		}else{
-			header("HTTP/1.1 200 OK");
-			echo json_encode(array('status' => 'fail'));
-			// $this->response(array('status' => 'fail'), 200);
-		}
-		// echo 'Total Results: ' . $query->num_rows();
-	}
-
-	function signup(){
-		// $rawpostdata = file_get_contents("php://input");
-		// $post = json_decode($rawpostdata, true);
-		// $username = $post['username'];
-		// $password = $post['password'];
-		$username = $_POST['username'];
-		$password = $_POST['password'];
+	function signup_post(){
+		$username = $this->post('username');
+		$password = $this->post('password');
 		$password = md5($password);
 
 		$query = $this->db->query("SELECT username, password FROM user WHERE username='{$username}'");
-		if ($query->num_rows > 0) {
-			// $this->response(array('error' => 'duplicate user'), 200);
-			header("HTTP/1.1 200 OK");
-			echo json_encode(array('error' => 'duplicate'));
-		} else {
+		if($query->num_rows > 0){
+			$this->response(array('error' => 'duplicate'), 200);
+		}else{
 			$data = array(
 				'username' => $username,
 				'password' => $password,
@@ -88,24 +48,21 @@ class User extends CI_Controller {
 			$query = $this->db->query("SELECT id FROM user WHERE username='{$username}'");
 			
 			//set session after user signup successfully
-			if ($query->num_rows == 1) {
+			if($query->num_rows == 1){
 				$result = $query->result();
 				$id = $result[0]->id;
 				$this->session->set_userdata('id', $id);
-				// $this->response(array('status' => 'success', 'id' => $id), 200);
-				header("HTTP/1.1 200 OK");
-				echo json_encode(array('status' => 'success', 'id' => $id));
+				$this->response(array('status' => 'success', 'id' => $id), 200);
 			}
+
 		}
 
 		// echo 'Total Results: ' . $query->num_rows();
 	}
 
-	function logout(){
+	function logout_get(){
 		$this->session->sess_destroy();
-		// return $this->response(array('status' => 'success'), 200);
-		header("HTTP/1.1 200 OK");
-		echo json_encode(array('status' => 'successs'));
+		return $this->response(array('status' => 'success'), 200);
 		// echo 'Total Results: ' . $query->num_rows();
 	}
 
@@ -115,6 +72,26 @@ class User extends CI_Controller {
 		// echo 'Total Results: ' . $query->num_rows();
 	}
 
+	function login_post() {
+		$username = $this->post('username');
+		$password = $this->post('password');
+		$password = md5($password);
+
+		$query = $this->db->query("SELECT id, username, password FROM user WHERE username='{$username}' and password='{$password}'");
+		if($query->num_rows > 0){
+			$result = $query->result();
+			$id = $result[0]->id;
+			$username = $result[0]->username;
+			
+ 			$this->session->set_userdata('id', $id);
+			$this->session->set_userdata('username', $username);
+
+			$this->response(array('status' => 'successs'), 200);
+		}else{
+			$this->response(array('status' => 'fail'), 200);
+		}
+		// echo 'Total Results: ' . $query->num_rows();
+	}
 
 	function user_get()
     {

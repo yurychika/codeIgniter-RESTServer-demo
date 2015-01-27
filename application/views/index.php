@@ -41,7 +41,7 @@ li{
 
 	</script>
 	<script type='text/javascript'>
-		function myController($scope){
+		function myController($scope) {
 			$scope.myname = 'gee';
 			$scope.age = '25';
 			//$scope.inputName  = '';
@@ -51,17 +51,16 @@ li{
 				{name:'yury', age:25}
 			]
 
-		 	$scope.getCount = function(){
-		 		console.log('in getting name');
-		 		return this.list.length;
-		 	}
+			$scope.getCount = function() {
+				console.log('in getting name');
+				return this.list.length;
+			}
 
-		 	$scope.addPerson = function(){
-		 		console.log(this === $scope);
-		 		console.log($scope);
-		 		this.list.push({name: this.inputName, age: 25});
-		 	}
-
+			$scope.addPerson = function() {
+				console.log(this === $scope);
+				console.log($scope);
+				this.list.push({name: this.inputName, age: 25});
+			}
 		}
 
 	</script>

@@ -30,8 +30,22 @@ class Expense extends REST_Controller
 			$id = $this->session->userdata('id');
 			$query = $this->db->query("SELECT * FROM expense WHERE userid={$id}");
 			$result = $query->result();
+			$data = array();
+			foreach($result as $item){
+				// $data->title = $item.title;
+				// $data->desc = $item.desc;
+				// $data->id = $item.id;
+				// $data->amount = $item.amount;
+				$item->comments = $this->getComments($item->id);
+			}
 			$this->response(array('data' => $result), 200);
 		}
+	}
+
+	function getComments($id){
+		$query = $this->db->query("SELECT * from comment WHERE expenseid='{$id}' ");
+		$result = $query->result();
+		return $result;
 	}
 
 	function update_post(){
@@ -89,13 +103,42 @@ class Expense extends REST_Controller
 		}
 	}
 
+	function addComment_post(){
+		if(!$this->isAuth()){
+			$this->response(array('error' => 'no login'), 200);
+		}else{
+			$data = array(
+				'expenseid' => $this->post('id'),
+				'comment' => $this->post('comment'),
+			);
+
+			$this->db->insert('comment', $data);
+			$id = $this->db->insert_id();
+			$query = $this->db->query("SELECT * from comment WHERE id={$id} ");
+			if($query->num_rows == 1){
+				$result = $query->result();
+				$data = $result[0];
+				$this->response(array('status' => 'success', 'data' => $data), 200);
+			}
+
+			$this->response(array('status' => 'fail'), 200);
+		}
+	}
+
 	function delete_post(){
 		if(!$this->isAuth()){
 			$this->response(array('error' => 'no login'), 200);
 		}else{
 			$id = $this->post('id');
-			$this->db->query("DELETE from expense where id='{$id}' ");
-			$this->response(array('status' => 'success'), 200);
+
+			$query = $this->db->query("SELECT * from expense WHERE id={$id} ");
+			if($query->num_rows === 0){		//nothing to delete in the DB
+				$this->response(array('status' => 'Already deleted'), 200);
+				return;
+			}else{
+				$this->db->query("DELETE from expense where id='{$id}' ");
+				$this->response(array('status' => 'success'), 200);
+			}
 		}
 	}
 
