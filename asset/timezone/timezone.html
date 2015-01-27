@@ -1,0 +1,51 @@
+<div class='container'>
+	<div class='pull-right'>
+		<a ng-click='logout()' href='#'>Log out</a>
+	</div>
+	<h2>My Timezone
+	
+	</h2>
+</div>
+<div class='container'>
+	<button ng-click='goToAdd()' class='btn btn-primary pull-right'>Add Timezone</button>
+	<!--<button onclick='getMaxValue()' class='btn btn-primary pull-right'>Get Max Value</button>
+	<script type='text/javascript'>
+		function getMaxValue(){
+			var max = 0, val, index = -1;
+			$('td.amount').each(function(){
+				val = parseInt($(this).html(), 10);
+				if(val >= max){
+					index++;
+					max = val;
+				}
+			});
+
+			$('td.amount')[index].style.backgroundColor = 'yellow';
+
+		}
+	</script>-->
+	<input type='text' class='form-control pull-right' style='width: 200px;margin-right: 20px' placeholder='search' ng-model='search'>
+</div>
+<div>
+	<table class='table'>
+		<thead>
+			<th>Name</th>
+			<th>City</th>
+			<th>Timezone</th>
+			<th>Current Time</th>
+			<th></th>
+
+		</thead>
+		<tr ng-repeat="timezone in timezones | filter:search">
+			<td>{{timezone.name}}</td>
+			<td class='amount'>{{timezone.city}}</td>
+			<td>{{timezone.timezone}}</td>
+			<td>current time</td>
+			<td><button ng-click='delete(timezone.id)' class='btn btn-danger btn-sm'>delete</button>
+			<button ng-click='goToEdit(timezone.id)' class='btn btn-success btn-sm'>edit</button></td>
+
+		</tr>
+	</table>
+
+
+</div>

@@ -1,0 +1,82 @@
+<h2>Add Timezone</h2>
+<div class='container'>
+
+	<form role="form" class='form-horizontal' style='width: 60%'>
+		<div class="form-group">
+			<label for="inputEmail3" class="col-sm-2 control-label">Name</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="name" name='name' placeholder="name" ng-focus='inputFocus()'>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputPassword3" class="col-sm-2 control-label">City</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="city" name='city' placeholder="city" ng-focus='inputFocus()'>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputPassword3" class="col-sm-2 control-label">Timezone</label>
+			<div class="col-sm-10">
+				<select class="form-control" id="timezone" name='timezone' placeholder="timezone" ng-focus='inputFocus()'>
+					<option value='GMT-12'>GMT-12</option>
+					<option value='GMT-11'>GMT-11</option>
+					<option value='GMT-10'>GMT-10</option>
+					<option value='GMT-9'>GMT-9</option>
+					<option value='GMT-8'>GMT-8</option>
+					<option value='GMT-7'>GMT-7</option>
+					<option value='GMT-6'>GMT-6</option>
+					<option value='GMT-5'>GMT-5</option>
+					<option value='GMT-4'>GMT-4</option>
+					<option value='GMT-3'>GMT-3</option>
+					<option value='GMT-2'>GMT-2</option>
+					<option value='GMT-1'>GMT-1</option>
+					<option value='GMT+0'>GMT+0</option>
+					<option value='GMT+1'>GMT+1</option>
+					<option value='GMT+2'>GMT+2</option>
+					<option value='GMT+3'>GMT+3</option>
+					<option value='GMT+4'>GMT+4</option>
+					<option value='GMT+5'>GMT+5</option>
+					<option value='GMT+6'>GMT+6</option>
+					<option value='GMT+7'>GMT+7</option>
+					<option value='GMT+8'>GMT+8</option>
+					<option value='GMT+9'>GMT+9</option>
+					<option value='GMT+10'>GMT+10</option>
+					<option value='GMT+11'>GMT+11</option>
+					<option value='GMT+12'>GMT+12</option>
+					<option value='GMT+13'>GMT+13</option>
+					<option value='GMT+14'>GMT+14</option>
+				</select>
+			</div>
+		</div>
+
+	<!-- 	<div class="form-group">
+			<label for="inputPassword3" class="col-sm-2 control-label">Date</label>
+			<div class="col-sm-10">
+				<input type="date" class="form-control" id="date" name='date' placeholder="date" ng-focus='inputFocus()'>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="inputPassword3" class="col-sm-2 control-label">Time</label>
+			<div class="col-sm-10">
+				<input type="time" class="form-control" id="time" name='time' placeholder="date" ng-focus='inputFocus()'>
+			</div>
+		</div>-->
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<ul>
+					<li ng-repeat="error in errors">
+						<p class='error'>{{error}}</p>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button ng-click='add()' class='btn btn-primary'>Submit</button>
+			</div>
+		</div>
+	</form>
+	<div class="form-group"></div>
+</div>

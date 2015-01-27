@@ -1,6 +1,6 @@
 <!doctype html>
 <html ng-app='project'>
-<title>Angular to-do list demo page</title>
+<title>Timezone Viewer</title>
 <style type='text/css'>
 body,div,p,h1,h2,h3,ul,li{
 	margin: 0;
@@ -36,10 +36,7 @@ li{
 	<script type='text/javascript' src='asset/js/angular-1.2.5/angular-resource.js'></script>
 	<script type='text/javascript' src='asset/js/angular-1.2.5/angular-route.js'></script>
 	<script type='text/javascript' src='asset/js/app.js'></script>
-	<script type='text/javascript' src='asset/js/expense.js'>
-
-
-	</script>
+	<script type='text/javascript' src='asset/js/timezone.js'></script>
 	<script type='text/javascript'>
 		function myController($scope) {
 			$scope.myname = 'gee';

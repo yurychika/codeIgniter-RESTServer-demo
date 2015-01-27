@@ -91,17 +91,17 @@ angular.module('project', ['ngRoute'])
 		controller: 'signupController',
 		templateUrl: 'asset/signup.html'
 	})
-	.when('/expense',{
-		controller: 'expenseController',
-		templateUrl: 'asset/expense/expense.html'
+	.when('/timezone',{
+		controller: 'timezoneController',
+		templateUrl: 'asset/timezone/timezone.html'
 	})	
 	.when('/add',{
-		controller: 'expenseController',
-		templateUrl: 'asset/expense/add.html'
+		controller: 'timezoneController',
+		templateUrl: 'asset/timezone/add.html'
 	})	
 	.when('/edit/:id',{
-		controller: 'expenseEditController',
-		templateUrl: 'asset/expense/edit.html'
+		controller: 'timezoneEditController',
+		templateUrl: 'asset/timezone/edit.html'
 	})
 	.otherwise({
 		redirectTo: '/'
@@ -115,7 +115,7 @@ angular.module('project', ['ngRoute'])
 	$scope.list = List.list;
 	
 	if(User.islogin){
-		$location.path('/expense');
+		$location.path('/timezone');
 	}
 
 	$scope.goToSignUp = function() {
@@ -133,7 +133,7 @@ angular.module('project', ['ngRoute'])
 		this.errors = [];
 	};
 
- 	var _validate = function(){
+	var _validate = function(){
 		var username = $('#username').val(), error, valid = false,
 			password = $('#password').val();
 
