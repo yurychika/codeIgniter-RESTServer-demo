@@ -11,8 +11,9 @@ class Welcome extends CI_Controller {
 	{
 		$id = $this->session->userdata('id');
 		$isLoggedIn = $id !== FALSE;
+		$apikey = $this->session->userdata('apikey');
 		$this->load->helper('url');
-		$this->load->view('index',array('isLoggedIn' => $isLoggedIn? 1 : 0));
+		$this->load->view('index', array('isLoggedIn' => $isLoggedIn? 1 : 0, 'apikey' => "'{$apikey}'"));
 	}
 }
 

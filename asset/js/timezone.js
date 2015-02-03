@@ -1,4 +1,13 @@
 console.log(angular.module('project'));
+window.currentGMT = new Date().getTimezoneOffset() / -60;
+
+window.getTimeByTimezone = function(timezone) {
+	var timezone = parseInt(timezone.substr(3));
+	offset = timezone - currentGMT;
+	var date = new Date();
+	date = new Date(date.getTime() + offset * 3600 * 1000);
+	return moment(date).format('MMMM Do YYYY, HH:mm:ss a');
+}
 
 Array.prototype.delete = function(id){
 	var len = this.length;
@@ -40,7 +49,7 @@ Array.prototype.replaceById = function(id, r){
 }
 
 angular.module('project')
-.factory('Timezone', function($http, User){
+.factory('Timezone', function($http, User, $interval){
 	var service = {
 
 		data: [],
@@ -55,51 +64,70 @@ angular.module('project')
 				callback();
 				return;
 			}
-			$http.get(siteUrl + '/REST/timezone/get')
+			$http({
+				method: 'GET',
+				url: siteUrl + '/REST/timezone/get',
+				headers: {
+					'X-API-KEY': User.apikey
+				}
+			})
 			.success(function(data) {
 				if (data.error) {
 					service.errors.push('Error happens');
 				} else {
 					service.data = data.data;
+					service.data.forEach(function(data) {
+						data.currentTime = getTimeByTimezone(data.timezone);
+						console.log(data.timezone, data.currentTime);
+					});
 					service.initialized = true;
 					callback();
 				}
 			})
-			.error(function(){});
+			.error(function(data){
+				alert(data.error);
+			});
 		},
 
 		//POST
 		add: function(name, city, timezone, callback) {
-			var data = {name: name, city: city, timezone: timezone};
+			var data = {name: name, city: city, timezone: timezone, apikey: User.apikey};
 
-			$http.post(siteUrl + '/REST/timezone/add', data)
+			$http({
+				method: 'POST',
+				url: siteUrl + '/REST/timezone/add',
+				headers: {
+					'X-API-KEY': User.apikey
+				},
+				data: data
+			})
 			.success(function(data){
 				if(data.status === 'success'){
 					service.data.push(data.data);
 				}
 				callback(true);
 			})
-			.error(function(){
-				callback(false);
+			.error(function(data){
+				alert(data.error);
 			});
 
 		},
 
-		addComment: function(id, comment, callback){
-			var data = {id: id, comment: comment};
+		// addComment: function(id, comment, callback){
+		// 	var data = {id: id, comment: comment};
 
-			$http.post(siteUrl + '/REST/expense/addComment', data)
-			.success(function(data){
-				if(data.status === 'success'){
-					service.data.getById(id).comments.push(data.data);
-					callback(true);
-				}
-			})
-			.error(function(){
-				callback(false);
-			});
+		// 	$http.post(siteUrl + '/REST/expense/addComment', data)
+		// 	.success(function(data){
+		// 		if(data.status === 'success'){
+		// 			service.data.getById(id).comments.push(data.data);
+		// 			callback(true);
+		// 		}
+		// 	})
+		// 	.error(function(){
+		// 		callback(false);
+		// 	});
 
-		},
+		// },
 
 		//PUT
 		update: function(timezone, callback){
@@ -107,20 +135,44 @@ angular.module('project')
 				id: timezone.id,
 				name: timezone.name,
 				city: timezone.city,
-				timezone: timezone.timezone
+				timezone: timezone.timezone,
+				apikey: User.apikey
 			};
 
-			return $http.put(siteUrl + '/REST/timezone/update', data)
+			return $http({
+				method: 'PUT',
+				url: siteUrl + '/REST/timezone/update',
+				headers: {
+					'X-API-KEY': User.apikey
+				},
+				data: data
+			});
+
+			// $http.put(siteUrl + '/REST/timezone/update', data)
 		},
 
 		//DELETE
 		delete: function(id, callback){
-			var data = {id: id};
-			return $http.delete(siteUrl + '/REST/timezone/delete/id/' + id)
+			var data = {id: id, apikey: User.apikey};
+			return $http({
+				method: 'POST',
+				url: siteUrl + '/REST/timezone/delete/id/' + id,
+				headers: {
+					'X-API-KEY': User.apikey
+				},
+				data: data
+			})
+			// return $http.delete(siteUrl + '/REST/timezone/delete/id/' + id)
 		}
 	};
-
-	service.get(function(data){});
+	$interval(function() {
+		service.data.forEach(function(data) {
+			// console.log(data);
+			data.currentTime = getTimeByTimezone(data.timezone);
+		});
+		// console.log('update time');
+	}, 1000);
+	// service.get(function(data){});
 	return service;
 })
 
@@ -163,11 +215,13 @@ angular.module('project')
 		return !this.errors.length;
 	};
 
-	Timezone.get(_getCallback);
-
 	if(!User.islogin){
 		$location.path('/');
+		return;
 	}
+	
+	Timezone.get(_getCallback);
+
 
 	$scope.goToAdd = function(){
 		$location.path('/add');
@@ -217,8 +271,8 @@ angular.module('project')
 				alert('Item not exists or item has been deleted');
 			}
 			Timezone.data.delete(id);
-		}).error(function() {
-
+		}).error(function(data) {
+			alert(data.error);
 		});
 	};
 
@@ -313,8 +367,9 @@ angular.module('project')
 					alert("Item does not exists");
 				}
 				$location.path('/timezone');
-			}).error(function(){
+			}).error(function(data){
 				//TBC
+				alert(data.error)
 			});
 		}
 	};

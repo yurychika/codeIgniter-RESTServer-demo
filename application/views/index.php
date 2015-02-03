@@ -30,6 +30,7 @@ li{
 	<script type='text/javascript'>
 		var siteUrl = "<?php echo site_url('');?>";
 		var islogin = <?php echo $isLoggedIn ?>;
+		var apikey = <?php echo $apikey ?>;
 	</script>
 	<script type='text/javascript' src='asset/js/jquery/jquery-2.0.3.min.js'></script>
 	<script type='text/javascript' src='asset/js/angular.js'></script>
@@ -37,6 +38,7 @@ li{
 	<script type='text/javascript' src='asset/js/angular-1.2.5/angular-route.js'></script>
 	<script type='text/javascript' src='asset/js/app.js'></script>
 	<script type='text/javascript' src='asset/js/timezone.js'></script>
+	<script type='text/javascript' src='asset/js/moment/moment.js'></script>
 	<script type='text/javascript'>
 		function myController($scope) {
 			$scope.myname = 'gee';

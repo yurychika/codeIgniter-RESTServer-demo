@@ -21,6 +21,8 @@ angular.module('project', ['ngRoute'])
 
 		islogin: window.islogin,
 
+		apikey: window.apikey,
+
 		username: '',
 
 		signup: function(username, password, callback){
@@ -202,6 +204,8 @@ angular.module('project', ['ngRoute'])
 		} else {
 			User.islogin = true;
 			User.username = this.username;
+			User.apikey = data.apikey;
+			console.log('apikey is', User.apikey);
 			$location.path('/');
 		}
 	};

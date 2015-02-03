@@ -25,6 +25,7 @@ class User extends CI_Controller {
 
 	function test_get(){
 		$id = $this->session->userdata('id');
+		$id = $this->session->userdata('apikey');
 		var_dump($id);
 		echo $id == false;
 		// echo 'Total Results: ' . $query->num_rows();
@@ -34,13 +35,27 @@ class User extends CI_Controller {
 		echo 123;
 	}
 
-	function login(){
+	function login() {
 		// $rawpostdata = file_get_contents("php://input");
 		// $post = json_decode($rawpostdata, true);
 		// $username = $post['username'];
 		// $password = $post['password'];
+		if (!isset($_POST['username']) || !isset($_POST['password'])) {
+			header("HTTP/1.1 200 OK");
+			echo json_encode(array('status' => 'invalid parameters'));
+			return;
+		}
 		$username = $_POST['username'];
 		$password = $_POST['password'];
+		if (empty($username) || empty($password) || !preg_match('/^[a-zA-Z0-9_]*$/', $username)) {
+			header("HTTP/1.1 200 OK");
+			echo json_encode(array('status' => 'fail', 'error' => 'invalid input'));
+			return;
+		}
+
+
+		$username = addslashes($username);
+		$password = addslashes($password);
 		$password = md5($password);
 
 		$query = $this->db->query("SELECT id, username, password FROM user WHERE username='{$username}' and password='{$password}' ");
@@ -51,7 +66,15 @@ class User extends CI_Controller {
 			
  			$this->session->set_userdata('id', $id);
 			$this->session->set_userdata('username', $username);
-			$apikey = md5($id . $username);
+			$apikey = md5($id . $username . time());
+			$this->session->set_userdata('apikey', $apikey);
+
+			$data = array(
+				'key' => $apikey,
+				'user_id' => $id
+			);
+
+			$this->db->insert('keys', $data);
 
 			header("HTTP/1.1 200 OK");
 			echo json_encode(array('status' => 'successs', 'apikey' => $apikey));
@@ -69,8 +92,23 @@ class User extends CI_Controller {
 		// $post = json_decode($rawpostdata, true);
 		// $username = $post['username'];
 		// $password = $post['password'];
+		if (!isset($_POST['username']) || !isset($_POST['password'])) {
+			header("HTTP/1.1 200 OK");
+			echo json_encode(array('status' => 'invalid parameters'));
+			return;
+		}
 		$username = $_POST['username'];
 		$password = $_POST['password'];
+		if (empty($username) || empty($password) || strlen($username) > 20 || strlen($password) > 20 || 
+			!preg_match('/^[a-zA-Z0-9_]*$/', $username)) {
+			header("HTTP/1.1 200 OK");
+			echo json_encode(array('status' => 'invalid parameters'));
+			return;
+		}
+
+		$username = addslashes($username);
+		$password = addslashes($password);
+
 		$password = md5($password);
 
 		$query = $this->db->query("SELECT username, password FROM user WHERE username='{$username}'");
@@ -92,9 +130,18 @@ class User extends CI_Controller {
 				$result = $query->result();
 				$id = $result[0]->id;
 				$this->session->set_userdata('id', $id);
+				$apikey = md5($id . $username . time());
+				$this->session->set_userdata('apikey', $apikey);
+
+				$data = array(
+					'key' => $apikey,
+					'user_id' => $id
+				);
+
+				$this->db->insert('keys', $data);
 				// $this->response(array('status' => 'success', 'id' => $id), 200);
 				header("HTTP/1.1 200 OK");
-				echo json_encode(array('status' => 'success', 'id' => $id));
+				echo json_encode(array('status' => 'success', 'id' => $id, 'apikey' => $apikey));
 			}
 		}
 
@@ -102,7 +149,11 @@ class User extends CI_Controller {
 	}
 
 	function logout(){
+		$apikey = $this->session->userdata('apikey');
 		$this->session->sess_destroy();
+		if (!empty($apikey)) {
+			$this->db->query("DELETE from `keys` where `key`='{$apikey}'");
+		}
 		// return $this->response(array('status' => 'success'), 200);
 		header("HTTP/1.1 200 OK");
 		echo json_encode(array('status' => 'successs'));
